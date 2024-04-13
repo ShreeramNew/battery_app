@@ -2,17 +2,21 @@ import { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { getBatteryLevelAsync } from "expo-battery";
 
+
 export default function Home() {
    let [battery, setBattery] = useState(0);
 
    useEffect(() => {
       let updateBattery = async () => {
          let newPercentage = await getBatteryLevelAsync();
-         setBattery(newPercentage);
+         let roundedValue=Math.round(newPercentage*100)
+         console.log(newPercentage*100);
+         console.log(roundedValue);
+         setBattery(roundedValue);
       };
 
       updateBattery();
-      
+
       const myInterVal = setInterval(updateBattery, 10000);
 
       return () => {
@@ -20,9 +24,17 @@ export default function Home() {
       };
    }, []);
 
+   useEffect(() => {
+      if (battery === 31) {
+         alert("Your battery reached 30%");
+
+         //Alarm
+      }
+   }, [battery]);
+
    return (
       <View style={myStyle.conatiner}>
-         <Text style={myStyle.textStyle}>{battery * 100}</Text>
+         <Text style={myStyle.textStyle}>{battery}</Text>
       </View>
    );
 }
